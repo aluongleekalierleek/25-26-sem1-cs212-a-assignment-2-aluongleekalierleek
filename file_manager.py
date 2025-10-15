@@ -36,6 +36,18 @@ def format_file_size(size_bytes, precision=2, use_binary=True):
     
     # TODO: Students implement the conversion algorithm
     # This involves loops, mathematical operations, and formatting
+        # This involves loops, mathematical operations, and formatting
+
+
+    size = float(size_bytes)
+    index = 0
+    
+    while size >= divisor and index < len(units) - 1:
+        size /= divisor
+        index += 1
+        
+    return f"{size:.{precision}f} {units[index]}"
+    
     
     return formatted_size
 
@@ -88,11 +100,13 @@ def list_directory_tree(directory, prefix="", max_depth=3, current_depth=0):
     if not os.path.isdir(directory):
         print(f"Error: '{directory}' is not a valid directory.")
         # TODO: return None for the base case
+        return None
 
     # Base case 2: Maximum depth reached
     if current_depth >= max_depth:
         print(f"{prefix}... (max depth reached)")
         # TODO: return None for yet another base case
+        return None
 
     try:
         # Get and sort directory contents
@@ -102,6 +116,7 @@ def list_directory_tree(directory, prefix="", max_depth=3, current_depth=0):
         if not items:
             print(f"{prefix}(empty directory)")
             # TODO: return None for yet another base case
+            return None
 
         for i, item in enumerate(items):
             item_path = os.path.join(directory, item)
@@ -128,6 +143,9 @@ def list_directory_tree(directory, prefix="", max_depth=3, current_depth=0):
                 print(f"{current_prefix}{item}/")
                 # Recursive case: explore subdirectory
                 # TODO: perform recursive function call
+                list_directory_tree(item_path, prefix=next_prefix, max_depth=max_depth, current_depth=current_depth + 1)
+
+                
 
     except (OSError, PermissionError) as e:
         print(f"{prefix}Error accessing directory: {e}")
@@ -140,10 +158,12 @@ def find_files_by_extension(directory, extension, current_path=""):
     # Base case: Invalid directory
     if not os.path.isdir(directory):
         # TODO: return an empty list for the base case
+        return []
         # TODO: remove the pass statement below, only added to avoid syntax error
-        pass
+        
 
     # TODO: Initialize found_files as an empty list
+        found_files = []
 
     try:
         for item in os.listdir(directory):
@@ -157,11 +177,12 @@ def find_files_by_extension(directory, extension, current_path=""):
                     )
                     found_files.append(relative_path)
 
-            elif os.path.isdir(item_path):
-                # Recursive case: Search in subdirectory
-                sub_path = os.path.join(current_path, item) if current_path else item
-                # TODO recursively call find_files_by_extension
-                # TODO: Extend found_files with results from recursive call
+                elif os.path.isdir(item_path):
+                      # Recursive case: Search in subdirectory
+                      sub_path = os.path.join(current_path, item) if current_path else item
+                      # Recursive call and extend found_files with results
+                      found_files.extend(find_files_by_extension(item_path, extension, current_path=sub_path))
+
                
 
     except (OSError, PermissionError):
